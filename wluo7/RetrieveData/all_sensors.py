@@ -2,11 +2,28 @@
 import signal, sys, time
 from Adafruit_I2C import Adafruit_I2C
 from adc_read import ADS1115_Read
+import Adafruit_BBIO.SPI as SPI
+import Adafruit_MAX31855.MAX31855 as MAX31855
+
+
 
 def signal_handler(signal, frame):
         print 'You pressed Ctrl+C!'
         sys.exit(0)
 signal.signal(signal.SIGINT, signal_handler)
+
+########
+#TEMP
+def c_to_f(c):
+        return c * 9.0 / 5.0 + 32.0
+
+# BeagleBone Black software SPI configuration.
+CLK = 'P9_12'
+CS  = 'P9_15'
+DO  = 'P9_23'
+temp_sensor = MAX31855.MAX31855(CLK, CS, DO)
+#TEMP
+#######
 
 ########
 #ACCEL
@@ -91,8 +108,19 @@ while True:
     yaccel = adc.read(1)
     zaccel = adc.read(2)
   
+    temp = sensor.readTempC()
+
     f = open('/root/wluo7/SensorData/distance.dat', 'w')
     f.write("%.4f" % (distance))
+    f.close()
+    f = open('/root/wluo7/SensorData/gyroscope.dat', 'w')
+    f.write("%.4f" % (zrot))
+    f.close()
+    f = open('/root/wluo7/SensorData/accelerometer.dat', 'w')
+    f.write("%.4f" % (zaccel))
+    f.close()
+    f = open('/root/wluo7/SensorData/temperature.dat', 'w')
+    f.write("%.4f" % (temp))
     f.close()
     #print "Dist: %.4f\tx: %.4f\ty: %.4f\tz: %.4f\txrot: %.4f\tyrot: %.4f\tzrot %.4f" % (distance,xaccel,yaccel,zaccel, xrot, yrot,zrot)
     n += 1
