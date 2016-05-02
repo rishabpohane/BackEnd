@@ -108,7 +108,7 @@ while True:
     yaccel = adc.read(1)
     zaccel = adc.read(2)
   
-    temp = sensor.readTempC()
+    temp = temp_sensor.readTempC()
 
     f = open('/root/wluo7/SensorData/distance.dat', 'w')
     f.write("%.4f" % (distance))

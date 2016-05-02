@@ -41,8 +41,12 @@ def request_handler(conn, addr):
         request = conn.recv(BUFFER_SIZE)
      	print "Request from front-end received: "+request
         result = process_request(request)
-        conn.send(result)
-        print "Reponse to front-end send..."
+        try:
+        	conn.send(result)
+        	print "Reponse to front-end send..."
+        except:
+        	print "Connection loss... closing socket."
+        	break
     conn.close()
     print "Disconnected client ", addr
 					
