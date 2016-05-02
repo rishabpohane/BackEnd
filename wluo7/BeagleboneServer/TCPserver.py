@@ -16,7 +16,6 @@ SERVER_ON = True
 
 # Parses the incoming request to appropriate function
 def process_request(request):
-<<<<<<< HEAD
 	match = re.search(r'(\S+)\s(\S+)', request)	
 	if match:
 		type = match.group(1);
@@ -34,37 +33,9 @@ def process_request(request):
 			return 'Invalid request type "'+type+'"'	
 	else:
 		return 'Invalid, can not parse request "'+request+'"'	
-		
-=======
-	return_list = []
-	requests = request.split("\n")
-	for x in requests:
-		match = re.search(r'(\S+)\s(\S+)', x)	
-		if match :
-			type = match.group(1);
-			content = match.group(2)
-			
-			if(content == "TMP" or content == "BAT"):
-				continue
-			
-			# Include corresponding functions for avaiable http requests
-			switch = {
-				'GET': get_data,
-			}
-			try:
-				return_list.append (switch.get(type)(content))
-			except TypeError, NameError:
-				return 'Invalid request type "'+type+'"'	
-		else:
-			return return_list
-			#return 'Invalid, can not parse request "'+request+'"'	
-	return return_list
->>>>>>> d08a012cfab2728e794ccad258d5883107d50c71
-
 
 # Called when connection is recieved
 def request_handler(conn, addr):
-<<<<<<< HEAD
     while True:
     	print "Waiting for front-end request..."
         request = conn.recv(BUFFER_SIZE)
@@ -74,22 +45,6 @@ def request_handler(conn, addr):
         print "Reponse to front-end send..."
     conn.close()
     print "Disconnected client ", addr
-=======
-	while True:
-		request = conn.recv(BUFFER_SIZE)
-		print "request %s" % (request)
-		result = process_request(request)	
-		print "result: %s" % (result)
-		if not isinstance(result, str):
-			for x in result:
-				conn.send(x)
-				print "sent"
-		else:
-			print "ERROR: %s" % result
-			print "connection closed" 
-		conn.close()
-		break
->>>>>>> d08a012cfab2728e794ccad258d5883107d50c71
 					
 if __name__ == '__main__':
 # Initialize server socket
