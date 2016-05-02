@@ -6,7 +6,8 @@ import re
 import socket
 import thread
 
-from RequestHandlers.GEThandler import *
+from RequestHandlers.GETHandler import *
+from RequestHandlers.POSTHandler import *
 
 TCP_IP = '127.0.0.1' # Change to Beaglebone static ip
 TCP_PORT = 5005
@@ -23,8 +24,10 @@ def process_request(request):
 		# Include corresponding functions for avaiable http requests
 		switch = {
 			'GET': get_data,
+            'POST': post_data
 		}
 		try:
+			print "Routing to proper request handler..."
 			return switch.get(type)(content)
 		except TypeError, NameError:
 			return 'Invalid request type "'+type+'"'	
@@ -35,13 +38,15 @@ def process_request(request):
 
 # Called when connection is recieved
 def request_handler(conn, addr):
-	while True:
-		request = conn.recv(BUFFER_SIZE)
-		result = process_request(request)	
-		conn.send(result)
-		conn.close()
-		print "Disconnected client ", addr
-		break
+    while True:
+    	print "Waiting for front-end request..."
+        request = conn.recv(BUFFER_SIZE)
+     	print "Request from front-end received: "+request
+        result = process_request(request)
+        conn.send(result)
+        print "Reponse to front-end send..."
+    conn.close()
+    print "Disconnected client ", addr
 					
 if __name__ == '__main__':
 # Initialize server socket
